@@ -1,0 +1,32 @@
+name: Changelog Notifier
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate Changelog
+      run: npm run generate-changelog  # Здесь выполните команду для генерации changelog
+
+    - name: Send Changelog to Telegram
+      run: |
+        curl -X POST \
+          -d "chat_id=$TELEGRAM_CHAT_ID" \
+          -d "text=Были внесены изменения в <name_branch> в $(date +'%H:%M %d.%m.%Y')\n\nБыло добавлено:\n$(cat changelog.txt)" \
+          "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage"
