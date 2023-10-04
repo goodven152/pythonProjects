@@ -26,5 +26,6 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: "@githublogs"
         run: |
-          echo "New commit pushed to main branch on GitHub!" > message.txt
+          echo "New commit pushed to main branch on GitHub!\n"
+          echo "This message was generated automatically"
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=New commit pushed to main branch on GitHub!%0AChanged files:%0A${FILES_CHANGED}" -d "disable_notification=true"
