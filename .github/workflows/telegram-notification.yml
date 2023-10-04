@@ -1,33 +1,3 @@
-#name: Telegram Notification
-#
-#on:
-#  push:
-#    branches:
-#      - main
-#
-#jobs:
-#  notify:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v2
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v2
-#        with:
-#          node-version: '14'
-#
-#      - name: Install Dependencies
-#        run: npm install
-#
-#
-#      - name: Send Telegram Notification
-#        env:
-#          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-#          TELEGRAM_CHAT_ID: "@githublogs"
-#        run: |
-#          echo "New commit pushed to main branch on GitHub!" > message.txt
-#          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
 name: Telegram Notification
 
 on:
@@ -42,39 +12,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Test curl
-        run: curl --version
-
       - name: Install Dependencies
         run: npm install
 
-      - name: Get Changed Files
-        id: get_changed_files
-        run: |
-          echo "FILES_CHANGED=$(git diff --name-only ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Send Telegram Notification
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: "@githublogs"
-          FILES_CHANGED: ${{ steps.get_changed_files.outputs.FILES_CHANGED }}
         run: |
-          echo "New commit pushed to main branch on GitHub!"
-          echo "Changed files:"
-          if [ -n "$FILES_CHANGED" ]; then
-            echo "$FILES_CHANGED"
-          else
-            echo "No files have changed."
-          fi
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
-
-      - name: Debug Info
-        run: |
-          echo "TELEGRAM_TOKEN: $TELEGRAM_TOKEN"
-          echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
-          echo "FILES_CHANGED: $FILES_CHANGED"
+          echo "New commit pushed to main branch on GitHub!" > message.txt
+          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
