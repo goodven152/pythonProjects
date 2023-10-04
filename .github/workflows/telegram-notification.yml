@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -19,6 +19,16 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Get Changed Files
+        id: git-changes
+        run: |
+          git log --oneline -n 5  # Вывести последние 5 коммитов для отладки
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          echo "Changed Files:"
+          echo "${CHANGED_FILES}"
+          echo "::set-output name=files::${CHANGED_FILES}"
+
       - name: Send Telegram Notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
