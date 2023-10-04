@@ -20,25 +20,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Determine Changed Files
-        id: diff
-        run: |
-          changed_files=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }})
-          echo "::set-output name=files::$changed_files"
 
       - name: Send Telegram Notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: "@githublogs"
         run: |
-          changed_files="${{ steps.diff.outputs.files }}"
-          if [ -z "$changed_files" ]; then
-            message="No files were changed in the commit."
-          else
-            message="Changed/Deleted files in the commit:"
-            for file in $changed_files; do
-              message="$message\n- $file"
-            done
-          fi
-          echo "$message" > message.txt
-          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)"
+          echo "New commit pushed to main branch on GitHub!" > message.txt
+          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification"
