@@ -23,7 +23,7 @@ jobs:
       - name: Get Changed Files
         id: git-changes
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
           echo "::set-output name=files::$CHANGED_FILES"
 
       - name: Send Telegram Notification
