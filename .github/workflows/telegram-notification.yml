@@ -23,8 +23,11 @@ jobs:
       - name: Get Changed Files
         id: git-changes
         run: |
-          CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
-          echo "::set-output name=files::$CHANGED_FILES"
+          git log --oneline -n 5  # Вывести последние 5 коммитов для отладки
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          echo "Changed Files:"
+          echo "${CHANGED_FILES}"
+          echo "::set-output name=files::${CHANGED_FILES}"
 
       - name: Send Telegram Notification
         env:
