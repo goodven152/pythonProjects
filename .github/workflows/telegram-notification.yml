@@ -23,9 +23,8 @@ jobs:
 
       - name: Send Telegram Notification
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: "@your_channel_username"
-          FILES_CHANGED: ${{ steps.get_changed_files.outputs.FILES_CHANGED }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: "@githublogs"
         run: |
-          MESSAGE="Новый коммит в ветке main на GitHub!%0A*Измененные файлы:%0A*$FILES_CHANGED"
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$MESSAGE" -d "disable_notification=true"
+          echo "New commit pushed to main branch on GitHub!%0A%0A<i>This message was generated automatically</i>" > message.txt
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true" -d "parse_mode=HTML"
