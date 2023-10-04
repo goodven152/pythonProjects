@@ -47,6 +47,15 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Test curl
+        run: curl --version
+
+      - name: Debug Info
+        run: |
+          echo "TELEGRAM_TOKEN: $TELEGRAM_TOKEN"
+          echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
+          echo "FILES_CHANGED: $FILES_CHANGED"
+
       - name: Install Dependencies
         run: npm install
 
