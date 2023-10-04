@@ -1,3 +1,33 @@
+#name: Telegram Notification
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#jobs:
+#  notify:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: '14'
+#
+#      - name: Install Dependencies
+#        run: npm install
+#
+#
+#      - name: Send Telegram Notification
+#        env:
+#          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#          TELEGRAM_CHAT_ID: "@githublogs"
+#        run: |
+#          echo "New commit pushed to main branch on GitHub!" > message.txt
+#          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
 name: Telegram Notification
 
 on:
@@ -12,7 +42,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -20,11 +50,17 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Get Changed Files
+        id: get_changed_files
+        run: |
+          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
 
       - name: Send Telegram Notification
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: "@githublogs"
         run: |
-          echo "New commit pushed to main branch on GitHub!" > message.txt
-          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
+          echo "New commit pushed to main branch on GitHub!"
+          echo "Changed files:"
+          echo "${{ steps.get_changed_files.outputs.files }}"  # Выводим список измененных файлов
+          cat message.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true"
