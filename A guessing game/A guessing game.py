@@ -7,7 +7,7 @@ max_attempts = 5
 attempts = 0
 
 #print(messages.welcome_message)
-sleep(2)
+#sleep(2)
 print(messages.question_message)
 sleep(2)
 
