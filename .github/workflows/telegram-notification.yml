@@ -26,6 +26,7 @@ jobs:
           TELEGRAM_CHAT_ID: "@githublogs"
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          echo "New commit pushed to <a href='https://github.com/goodven152/pythonProjects'><b>main</b></a> branch on GitHub!%0A%0A<i>This message was generated automatically</i>"
-          echo "Commit Message: $COMMIT_MESSAGE" > message.txt
-          cat messagee.txt | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=$(cat message.txt)" -d "disable_notification=true" -d "parse_mode=HTML"
+          # echo "New commit pushed to <a href='https://github.com/goodven152/pythonProjects'><b>main</b></a> branch on GitHub!%0A%0A<i>This message was generated automatically%0ACommit Message: $COMMIT_MESSAGE</i>"
+          # echo "Commit Message: $COMMIT_MESSAGE" > message.txt
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=New commit pushed to <a href='https://github.com/goodven152/pythonProjects'><b>main</b></a> branch on GitHub!%0A%0A<i>This message was generated automatically%0ACommit Message: $COMMIT_MESSAGE</i>" -d "disable_notification=true" -d "parse_mode=HTML"
+          # curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=New commit pushed to <a href='https://github.com/goodven152/pythonProjects'><b>main</b></a> branch on GitHub!%0A%0A<i>This message was generated automatically%0ACommit Message: $COMMIT_MESSAGE</i>"
