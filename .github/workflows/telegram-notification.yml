@@ -28,6 +28,6 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: "@your_channel_username"
-          COMMIT_MESSAGE: ${{ steps.commit_message.outputs.message }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" -d "chat_id=${TELEGRAM_CHAT_ID}" -d "text=New commit pushed to main branch on GitHub!%0ACommit Message: $COMMIT_MESSAGE"
